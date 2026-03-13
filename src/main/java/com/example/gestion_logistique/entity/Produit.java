@@ -15,11 +15,12 @@ public class Produit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nomP;
     private String categorie;
-    private String prix;
+    private double prix;
     private int quantite;
 
-    @OneToMany(mappedBy ="produit_id",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy ="produit",cascade = CascadeType.ALL)
     private List<MouvementStock> mouvements;
 
 }
