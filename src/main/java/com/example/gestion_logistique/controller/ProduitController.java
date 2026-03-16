@@ -26,6 +26,15 @@ public class ProduitController {
         return "Produit.html";
 
     }
+    @GetMapping("{id}/edit")
+    public String afficherFormulaireModification(@PathVariable Long id,Model model){
+        Produit produit=produitService.getProduitById(id);
+        List<Produit>produits=produitService.afficherProduits();
+        model.addAttribute("products",produits);
+        model.addAttribute("produitEdit",produit);
+        return "Produit.html";
+
+    }
 
     @PostMapping
     public String ajouterProduit(

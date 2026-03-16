@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouvements de Stock</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #e8f5e9);
+            color: #1f2937;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .nav-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            background: #ffffff;
+            color: #374151;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            transition: all 0.2s ease;
+            border: 1.5px solid #e5e7eb;
+        }
+
+        .nav-link:hover {
+            background: #f3f4f6;
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(20,184,166,0.3);
+        }
+
+        /* ── HEADER ── */
+        .page-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-family: "Syne", sans-serif;
+            font-size: 34px;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .page-header p { color: #6b7280; font-size: 15px; }
+
+        /* ── ALERTS ── */
+        .alert {
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1.5px solid #bbf7d0;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1.5px solid #fecaca;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.07);
+            padding: 26px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .icon-entree  { background: #f0fdf4; }
+        .icon-sortie  { background: #fef2f2; }
+        .icon-history { background: #eff6ff; }
+        .icon-filter  { background: #fefce8; }
+
+        .card-header h2 {
+            font-family: "Syne", sans-serif;
+            font-size: 19px;
+            color: #0f172a;
+        }
+
+        /* ── FORMS ── */
+        .forms-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            align-items: end;
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+
+        .form-group label {
+            margin-bottom: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 11px 14px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+            font-family: "DM Sans", sans-serif;
+            background: #f9fafb;
+            color: #1f2937;
+            transition: 0.2s ease;
+        }
+
+        .entree-card .form-group input:focus,
+        .entree-card .form-group select:focus {
+            border-color: #22c55e;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
+        }
+
+        .sortie-card .form-group input:focus,
+        .sortie-card .form-group select:focus {
+            border-color: #ef4444;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.12);
+        }
+
+        /* ── BUTTONS ── */
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: "DM Sans", sans-serif;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-entree {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .btn-entree:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(34,197,94,0.32);
+        }
+
+        .btn-sortie {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-sortie:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(239,68,68,0.28);
+        }
+
+        .btn-filter {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(245,158,11,0.28);
+        }
+
+        .btn-reset {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-reset:hover { background: #e5e7eb; }
+
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .stat-total { background: #eff6ff; }
+        .stat-in    { background: #f0fdf4; }
+        .stat-out   { background: #fef2f2; }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-family: "Syne", sans-serif;
+            font-size: 26px;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .table-wrapper { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        thead tr {
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+        }
+
+        th {
+            padding: 15px 14px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 13px 12px;
+            text-align: center;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        tbody tr { transition: background 0.15s ease; }
+        tbody tr:hover { background: #f8fafc; }
+        tbody tr:last-child td { border-bottom: none; }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-entree {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1.5px solid #bbf7d0;
+        }
+
+        .badge-sortie {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1.5px solid #fecaca;
+        }
+
+        .qty-entree { font-weight: 700; color: #16a34a; font-size: 15px; }
+        .qty-sortie { font-weight: 700; color: #dc2626; font-size: 15px; }
+
+        .id-badge {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 3px 9px;
+            border-radius: 6px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #9ca3af;
+            font-size: 15px;
+        }
+
+        @media (max-width: 900px) {
+            .forms-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 16px 10px; }
+            .card { padding: 18px; }
+            .page-header h1 { font-size: 26px; }
+            .stats-row { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .filter-bar { flex-direction: column; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+
+    <nav class="nav-bar">
+        <a th:href="@{/produits}" class="nav-link"> Produits</a>
+        <a th:href="@{/mouvements}" class="nav-link active"> Mouvements de Stock</a>
+    </nav>
+
+
+    <div class="page-header">
+        <h1>📊 Mouvements de Stock</h1>
+        <p>Enregistrez les entrées et sorties, consultez l'historique complet</p>
+    </div>
+
+
+    <div class="alert alert-success"
+         th:if="${successMessage}"
+         th:text="${'   ' + successMessage}">
+    </div>
+
+    <div class="alert alert-error"
+         th:if="${errorMessage}"
+         th:text="${'   ' + errorMessage}">
+    </div>
+
+
+    <div class="stats-row">
+
+        <div class="stat-card">
+            <div class="stat-icon stat-total">📋</div>
+            <div>
+                <div class="stat-label">Total mouvements</div>
+                <div class="stat-value"
+                     th:text="${#lists.size(mouvements)}">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon stat-in"></div>
+            <div>
+                <div class="stat-label">Entrées</div>
+                <div class="stat-value"
+                     th:text="${#lists.size(mouvements.?[type == 'ENTREE'])}">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon stat-out"></div>
+            <div>
+                <div class="stat-label">Sorties</div>
+                <div class="stat-value"
+                     th:text="${#lists.size(mouvements.?[type == 'SORTIE'])}">0</div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="forms-grid">
+
+        <div class="card entree-card">
+            <div class="card-header">
+                <div class="card-icon icon-entree"></div>
+                <h2>Entrée de stock</h2>
+            </div>
+
+            <form th:action="@{/mouvements/entree}" method="post">
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="produitEntree">Produit</label>
+                        <select id="produitEntree" name="produitId" required>
+                            <option value="" disabled selected>Sélectionner...</option>
+                            <option th:each="p : ${products}"
+                                    th:value="${p.id}"
+                                    th:text="${p.nomP + ' (Stock : ' + p.quantite + ')'}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="qteEntree">Quantité</label>
+                        <input type="number"
+                               id="qteEntree"
+                               name="quantite"
+                               placeholder="Ex : 50"
+                               min="1"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="motifEntree">Motif</label>
+                        <input type="text"
+                               id="motifEntree"
+                               name="motif"
+                               placeholder="Ex : Réception commande"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-entree">
+                             Enregistrer entrée
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <!-- ── FORMULAIRE SORTIE ── -->
+        <div class="card sortie-card">
+            <div class="card-header">
+                <div class="card-icon icon-sortie"></div>
+                <h2>Sortie de stock</h2>
+            </div>
+
+            <form th:action="@{/mouvements/sortie}" method="post">
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="produitSortie">Produit</label>
+                        <select id="produitSortie" name="produitId" required>
+                            <option value="" disabled selected>Sélectionner...</option>
+                            <option th:each="p : ${products}"
+                                    th:value="${p.id}"
+                                    th:text="${p.nomP + ' (Stock : ' + p.quantite + ')'}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="qteSortie">Quantité</label>
+                        <input type="number"
+                               id="qteSortie"
+                               name="quantite"
+                               placeholder="Ex : 10"
+                               min="1"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="motifSortie">Motif</label>
+                        <input type="text"
+                               id="motifSortie"
+                               name="motif"
+                               placeholder="Ex : Expédition client"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-sortie">
+                             Enregistrer sortie
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon icon-filter"></div>
+            <h2>Filtrer par produit</h2>
+        </div>
+
+        <form th:action="@{/mouvements/filtre}" method="get" class="filter-bar">
+            <div class="form-group" style="flex:1; min-width:200px;">
+                <label for="filtreSelect">Produit</label>
+                <select id="filtreSelect" name="produitId">
+                    <option th:each="p : ${products}"
+                            th:value="${p.id}"
+                            th:text="${p.nomP}"
+                            th:selected="${p.id == produitFiltreId}">
+                    </option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-filter"> Filtrer</button>
+            <a th:href="@{/mouvements}" class="btn btn-reset"> Réinitialiser</a>
+        </form>
+    </div>
+
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon icon-history"></div>
+            <h2>Historique des mouvements</h2>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Produit</th>
+                    <th>Type</th>
+                    <th>Quantité</th>
+                    <th>Motif</th>
+                    <th>Date &amp; Heure</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="m : ${mouvements}">
+
+                    <td>
+                        <span class="id-badge" th:text="${m.id}"></span>
+                    </td>
+
+                    <td th:text="${m.produit.nomP}"></td>
+
+                    <!-- Badge type ENTREE / SORTIE -->
+                    <td>
+                            <span th:if="${m.type == 'ENTREE'}"
+                                  class="badge badge-entree"> ENTRÉE</span>
+                        <span th:if="${m.type == 'SORTIE'}"
+                              class="badge badge-sortie"> SORTIE</span>
+                    </td>
+
+                    <td>
+                            <span th:if="${m.type == 'ENTREE'}"
+                                  class="qty-entree"
+                                  th:text="${'+' + m.quantite}">
+                            </span>
+                        <span th:if="${m.type == 'SORTIE'}"
+                              class="qty-sortie"
+                              th:text="${'-' + m.quantite}">
+                            </span>
+                    </td>
+
+                    <td th:text="${m.motif}"></td>
+
+                    <td th:text="${#temporals.format(m.dateMouvement, 'dd/MM/yyyy HH:mm')}"></td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(mouvements)}">
+                    <td colspan="6" class="empty-state">
+                         Aucun mouvement enregistré pour le moment.
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Produits</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,7 +14,7 @@
         }
 
         body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-family: "DM Sans", sans-serif;
             background: linear-gradient(135deg, #f4f7fb, #eaf1f8);
             color: #1f2937;
             padding: 40px 20px;
@@ -24,15 +25,18 @@
             margin: 0 auto;
         }
 
+        /* ===== PAGE HEADER ===== */
         .page-header {
             text-align: center;
             margin-bottom: 30px;
         }
 
         .page-header h1 {
-            font-size: 32px;
-            color: #111827;
-            margin-bottom: 10px;
+            font-family: "Syne", sans-serif;
+            font-size: 36px;
+            color: #0f172a;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .page-header p {
@@ -49,7 +53,8 @@
         }
 
         .card h2 {
-            font-size: 22px;
+            font-family: "Syne", sans-serif;
+            font-size: 20px;
             margin-bottom: 20px;
             color: #0f172a;
         }
@@ -68,19 +73,23 @@
 
         .form-group label {
             margin-bottom: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-group input {
             padding: 12px 14px;
-            border: 1px solid #d1d5db;
+            border: 1.5px solid #e5e7eb;
             border-radius: 10px;
             outline: none;
             font-size: 14px;
+            font-family: "DM Sans", sans-serif;
             transition: 0.25s ease;
             background-color: #f9fafb;
+            color: #1f2937;
         }
 
         .form-group input:focus {
@@ -92,13 +101,15 @@
         .btn {
             border: none;
             border-radius: 10px;
-            padding: 12px 16px;
+            padding: 12px 18px;
             font-size: 14px;
             font-weight: 600;
+            font-family: "DM Sans", sans-serif;
             cursor: pointer;
-            transition: 0.25s ease;
+            transition: all 0.25s ease;
             text-decoration: none;
             display: inline-block;
+            text-align: center;
         }
 
         .btn-add {
@@ -108,7 +119,52 @@
 
         .btn-add:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(34, 197, 94, 0.25);
+            box-shadow: 0 8px 18px rgba(34, 197, 94, 0.30);
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 9px 16px;
+            font-size: 13px;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(59, 130, 246, 0.28);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 9px 16px;
+            font-size: 13px;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(239, 68, 68, 0.28);
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 11px 22px;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 11px 22px;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.30);
         }
 
         .table-wrapper {
@@ -129,25 +185,26 @@
         th {
             padding: 16px 14px;
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         td {
             padding: 14px 12px;
             text-align: center;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #f0f2f5;
             font-size: 14px;
             color: #374151;
         }
 
         tbody tr {
-            transition: background-color 0.2s ease, transform 0.2s ease;
+            transition: background-color 0.2s ease;
         }
 
         tbody tr:hover {
-            background-color: #f9fafb;
+            background-color: #f8fafc;
         }
 
         tbody tr:last-child td {
@@ -176,33 +233,106 @@
             margin: 0;
         }
 
-        .btn-edit {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            padding: 10px 14px;
-        }
-
-        .btn-edit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(59, 130, 246, 0.22);
-        }
-
-        .btn-delete {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-            padding: 10px 14px;
-        }
-
-        .btn-delete:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(239, 68, 68, 0.22);
-        }
-
         .empty-state {
             text-align: center;
-            padding: 30px;
-            color: #6b7280;
+            padding: 40px;
+            color: #9ca3af;
             font-size: 15px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.18);
+            padding: 36px;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px;
+            animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-40px) scale(0.96);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            padding-bottom: 18px;
+            border-bottom: 1.5px solid #f0f2f5;
+        }
+
+        .modal-header h2 {
+            font-family: "Syne", sans-serif;
+            font-size: 22px;
+            color: #0f172a;
+            margin-bottom: 0;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #f3f4f6;
+            color: #6b7280;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            line-height: 1;
+            font-weight: 400;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1.5px solid #f0f2f5;
+        }
+
+        .id-badge {
+            display: inline-block;
+            background: #f0fdf4;
+            color: #15803d;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #bbf7d0;
         }
 
         @media (max-width: 768px) {
@@ -216,7 +346,7 @@
             }
 
             .page-header h1 {
-                font-size: 26px;
+                font-size: 28px;
             }
 
             .form-grid {
@@ -231,6 +361,14 @@
             .btn {
                 width: 100%;
             }
+
+            .modal-card {
+                padding: 24px;
+            }
+
+            .modal-footer {
+                flex-direction: column-reverse;
+            }
         }
     </style>
 </head>
@@ -239,41 +377,45 @@
 <div class="container">
 
     <div class="page-header">
-        <h1>Gestion des Produits</h1>
+        <h1> Gestion des Produits</h1>
+        <p>Ajoutez, modifiez et supprimez vos produits en toute simplicité</p>
     </div>
 
     <div class="card">
-        <h2>Ajouter un produit</h2>
+        <h2> Ajouter un produit</h2>
         <form action="/produits" method="post">
             <div class="form-grid">
                 <div class="form-group">
                     <label for="nomProduit">Nom du produit</label>
-                    <input type="text" id="nomProduit" name="nomProduit" placeholder="Ex: Clavier mécanique" required>
+                    <input type="text" id="nomProduit" name="nomProduit"
+                           placeholder="Ex: Clavier mécanique" required>
                 </div>
 
                 <div class="form-group">
                     <label for="categorie">Catégorie</label>
-                    <input type="text" id="categorie" name="categorie" placeholder="Ex: Informatique" required>
+                    <input type="text" id="categorie" name="categorie"
+                           placeholder="Ex: Informatique" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="prix">Prix</label>
-                    <input type="number" id="prix" name="prix" placeholder="Ex: 299.99" step="0.01" required>
+                    <label for="prix">Prix (DH)</label>
+                    <input type="number" id="prix" name="prix"
+                           placeholder="Ex: 299.99" step="0.01" min="0" required>
                 </div>
 
                 <div class="form-group">
                     <label for="quantite">Quantité</label>
-                    <input type="number" id="quantite" name="quantite" placeholder="Ex: 15" required>
+                    <input type="number" id="quantite" name="quantite"
+                           placeholder="Ex: 15" min="0" required>
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-add"> Ajouter</button>
+                    <button type="submit" class="btn btn-add">Ajouter</button>
                 </div>
             </div>
         </form>
     </div>
 
-    <!-- Tableau des produits -->
     <div class="card">
         <h2>Liste des produits</h2>
 
@@ -289,27 +431,20 @@
                     <th>Actions</th>
                 </tr>
                 </thead>
-
                 <tbody>
                 <tr th:each="produit : ${products}">
-                    <td th:text="${produit.id}"></td>
+                    <td><span class="id-badge" th:text="${produit.id}"></span></td>
                     <td th:text="${produit.nomP}"></td>
                     <td th:text="${produit.categorie}"></td>
                     <td class="price" th:text="${produit.prix + ' DH'}"></td>
                     <td class="stock" th:text="${produit.quantite}"></td>
                     <td>
                         <div class="actions">
-                            <!-- Modifier -->
-                            <form th:action="@{/produits/{id}(id=${produit.id})}" method="post" class="action-form">
-                                <input type="hidden" name="_method" value="PUT">
-                                <input type="hidden" name="nomProduit" th:value="${produit.nomP}">
-                                <input type="hidden" name="categorie" th:value="${produit.categorie}">
-                                <input type="hidden" name="quantite" th:value="${produit.quantite}">
-                                <input type="hidden" name="prix" th:value="${produit.prix}">
-                                <button type="submit" class="btn btn-edit"> Modifier</button>
-                            </form>
+                            <a th:href="@{/produits/{id}/edit(id=${produit.id})}"
+                               class="btn btn-edit"> Modifier</a>
 
-                            <form th:action="@{/produits/{id}(id=${produit.id})}" method="post" class="action-form">
+                            <form th:action="@{/produits/{id}(id=${produit.id})}"
+                                  method="post" class="action-form">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-delete"> Supprimer</button>
                             </form>
@@ -318,13 +453,64 @@
                 </tr>
 
                 <tr th:if="${#lists.isEmpty(products)}">
-                    <td colspan="6" class="empty-state">Aucun produit disponible pour le moment.</td>
+                    <td colspan="6" class="empty-state">
+                         Aucun produit disponible pour le moment.
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+</div>
+
+
+<div class="modal-overlay" id="modalOverlay"
+     th:classappend="${produitEdit != null} ? 'active' : ''">
+
+    <div class="modal-card" th:if="${produitEdit != null}">
+
+        <div class="modal-header">
+            <h2> Modifier le produit</h2>
+            <a th:href="@{/produits}" class="modal-close" title="Fermer">&times;</a>
+        </div>
+
+        <form th:action="@{/produits/{id}(id=${produitEdit.id})}" method="post">
+            <input type="hidden" name="_method" value="PUT">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="editNom">Nom du produit</label>
+                    <input type="text" id="editNom" name="nomProduit"
+                           th:value="${produitEdit.nomP}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editCategorie">Catégorie</label>
+                    <input type="text" id="editCategorie" name="categorie"
+                           th:value="${produitEdit.categorie}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPrix">Prix (DH)</label>
+                    <input type="number" id="editPrix" name="prix"
+                           th:value="${produitEdit.prix}" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editQuantite">Quantité</label>
+                    <input type="number" id="editQuantite" name="quantite"
+                           th:value="${produitEdit.quantite}" min="0" required>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a th:href="@{/produits}" class="btn btn-cancel"> Annuler</a>
+                <button type="submit" class="btn btn-save"> Enregistrer</button>
+            </div>
+        </form>
+
+    </div>
 </div>
 
 </body>

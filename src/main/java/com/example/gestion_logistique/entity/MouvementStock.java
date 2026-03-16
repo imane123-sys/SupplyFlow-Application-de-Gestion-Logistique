@@ -18,6 +18,7 @@ public class MouvementStock {
 
     private String type;
     private int quantite;
+    private String motif;
     private LocalDate dateMouvement;
 
     @ManyToOne

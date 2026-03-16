@@ -13,7 +13,10 @@ public class ProduitService {
     private ProduitRepository produitRepository;
 
 
-
+    public Produit getProduitById(Long id) {
+        return produitRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit non trouvé"));
+    }
     public Produit ajouterProduit(Produit p) {
         return produitRepository.save(p);
     }
